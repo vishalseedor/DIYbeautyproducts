@@ -1,8 +1,12 @@
 
 
+import 'package:diy_beauty_products/CartScreen/cartscreen.dart';
+import 'package:diy_beauty_products/CategoryScreen/categoryscreen.dart';
+import 'package:diy_beauty_products/Colors/colors.dart';
 import 'package:diy_beauty_products/HomeScreen/homescreen.dart';
+import 'package:diy_beauty_products/ProfileScreen/profilescreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_iconly/flutter_iconly.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final pages = [const HomeScreens(),const Text('data'),const Text('data'),const Text('data')];
+  final pages = [const ProductScreen(),const CategoryScreen(),const CartScreen(),const ProfileScreen()];
   int currentPageIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -55,6 +59,7 @@ class _HomePageState extends State<HomePage> {
       // ),
       body: pages[currentPageIndex],
       bottomNavigationBar: BottomNavigationBar(
+   selectedItemColor: appcolor,
         type: BottomNavigationBarType.fixed,
         currentIndex: currentPageIndex,
         onTap: (index) {
@@ -66,22 +71,22 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon:Icon(Icons.home_outlined),
             label: "Home",
-            activeIcon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category_outlined),
+            icon: Icon(Icons.face_outlined),
             label: "Recepies",
-            activeIcon: Icon(Icons.face_outlined),
+            activeIcon: Icon(Icons.face),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shop_outlined),
+            icon: Icon(Icons.shopping_bag_outlined),
             label: "Cart",
-            activeIcon:  Icon(Icons.shop_outlined),
+            activeIcon:  Icon(Icons.shopping_bag),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             label: "Profile",
-            activeIcon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:diy_beauty_products/Colors/colors.dart';
 import 'package:diy_beauty_products/GetStatredScreen/getstatredscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,10 +18,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
           textTheme: GoogleFonts.latoTextTheme(),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor:appcolor),
         useMaterial3: true,
       ),
-      home: const GetStartedScreen()
+      home: const WelcomePage()
     );
   }
 }

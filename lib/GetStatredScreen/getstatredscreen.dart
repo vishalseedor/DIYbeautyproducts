@@ -1,55 +1,84 @@
-import 'package:diy_beauty_products/Colors/colors.dart';
+
 import 'package:diy_beauty_products/LoginScreen/loginscreen.dart';
 import 'package:flutter/material.dart';
-
-class GetStartedScreen extends StatefulWidget {
-  const GetStartedScreen({super.key});
+import 'package:flutter/widgets.dart';
+class WelcomePage extends StatefulWidget {
+  const WelcomePage({super.key});
 
   @override
-  State<GetStartedScreen> createState() => _GetStartedScreenState();
+  _WelcomePageState createState() => _WelcomePageState();
 }
 
-class _GetStartedScreenState extends State<GetStartedScreen> {
- 
+class _WelcomePageState extends State<WelcomePage>{
+
+
+
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Scaffold(
-         backgroundColor: appcolor,
-        body: SingleChildScrollView(
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/welcom.png'),
+            fit: BoxFit.cover
+          )
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomRight,
+              colors: [
+                Colors.black.withOpacity(.9),
+                Colors.black.withOpacity(.4),
+              ]
+            )
+          ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 20),
+            padding: const EdgeInsets.all(30.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-            // mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Center(child: Text('Skin Care Products &',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,fontSize: 40),)),
-                 const Center(child: Text('Cosmetics',style: TextStyle(color: Colors.black,fontWeight: FontWeight.w900,fontSize: 40))),
-                  SizedBox(height: size.height*0.01),
-                 const Center(child: Text('Beauty gives the confidence you deserve are a great way to ',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),
-                 SizedBox(height: size.height*0.01),
-                 const Center(child: Text(' express yourself and boost your confidence. ',style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),)),
-                 Center(child: Image.asset('assets/get.png')),
-                 Center(child: SizedBox(
-                  width: size.width*0.6,
-                  height: size.height*0.06,
-                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                    onPressed: (){
-                      Navigator.push(context,MaterialPageRoute(builder:(context)=> const LoginScreen()));
-                    }, child:const Text('Get Started',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
-                 ),)
-            
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Text("DIY Beauty Products", style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w900),),
+                const SizedBox(height: 20,),
+                Text("Let's start with purchase", style: TextStyle(color: Colors.white, fontSize: 18),),
+                const SizedBox(height: 60,),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,MaterialPageRoute(builder: (context)=>const LoginScreen()));
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20)
+                    ),
+                    child: Center(
+                      child:const Text("GET START", style: TextStyle(fontWeight: FontWeight.w900),)
+                    ),
+                  ),
+                ),
+                
+                const SizedBox(height: 20,),
+                // FadeInUp(duration: Duration(milliseconds: 1700), child: Container(
+                //   height: 50,
+                //   decoration: BoxDecoration(
+                //     border: Border.all(color: Colors.white),
+                //     borderRadius: BorderRadius.circular(50)
+                //   ),
+                //   child: Center(
+                //     child: Text("Create Account", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                //   ),
+                // )),
+                const SizedBox(height: 30,),
+      
+
               ],
             ),
           ),
         ),
-        
-        
-        
       ),
-      
     );
   }
 }

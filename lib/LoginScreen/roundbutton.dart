@@ -1,3 +1,4 @@
+import 'package:diy_beauty_products/Colors/colors.dart';
 import 'package:flutter/material.dart';
 
 
@@ -20,7 +21,7 @@ class RoundButton extends StatelessWidget {
         height: size.height * 0.06,
         decoration: BoxDecoration(
             //gradient: LinearGradient(colors: [Colors.black, redcolor]),
-            color: Colors.black,
+            color: appcolor,
             borderRadius: BorderRadius.circular(5)),
         child: Center(
           child: loading
