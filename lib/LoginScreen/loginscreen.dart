@@ -1,9 +1,16 @@
 
 
+import 'dart:convert';
+
+import 'package:diy_beauty_products/BottomNavigationBar/bottomnavigationbar.dart';
 import 'package:diy_beauty_products/Colors/colors.dart';
 import 'package:diy_beauty_products/LoginScreen/roundbutton.dart';
+import 'package:diy_beauty_products/ProfileScreen/models/profilemodel.dart';
+import 'package:diy_beauty_products/ProfileScreen/provider/userprovider.dart';
 import 'package:diy_beauty_products/RegisterScreen/registerscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 
 
@@ -20,9 +27,90 @@ class _LoginScreenState extends State<LoginScreen> {
   
   bool rememberMe = true;
   bool loading = false;
-  TextEditingController phonecontroller = TextEditingController();
+  late bool _passwordVisible;
+  TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller =TextEditingController();
   final _formKey = GlobalKey<FormState>();
+   void loginBeautyProducts(String email, String password) async {
+    print(email);
+    print(password);
+    const url =
+        'http://campus.sicsglobal.co.in/Project/Diy_product/api/user_login.php';
+
+    Map<String, String> body = {'email': email, 'password': password};
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: body,
+      );
+      print(url);
+      var jsonData = json.decode(response.body);
+      print(jsonData);
+      print(jsonData["status"]);
+      if (response.statusCode == 200) {
+        if (jsonData['status'] == true) {
+          //      getstorage.write("phone",loginModel!.phone.toString());
+          // getstorage.write("password",loginModel!.password.toString());
+          // getstorage.read(phone);
+          // phone=getstorage.read("phone");
+
+          List user = jsonData['userData'];
+          if (user.isNotEmpty) {
+            UserData userdata = UserData.fromJson(user[0]);
+            String userId = userdata.id;
+            Provider.of<UserProvider>(context, listen: false)
+                .setCurrentUserId(userId);
+            print(userId);
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor:appcolor,
+              content: const Text(
+                'Login Successful!',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              duration: const Duration(seconds: 4),
+            ),
+          );
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const HomePage()));
+          print(body);
+          print("Response body${response.body}");
+
+          print('Login successful');
+        } else if (jsonData['status'] == false) {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.green,
+              content: const Text(
+                'Invalid email and password',
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              duration: const Duration(seconds: 4),
+            ),
+          );
+          print('Error: ${response.statusCode}');
+        }
+      } else {
+        print('fffff');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    _passwordVisible = false;
+  }
  
 
 
@@ -67,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(height: size.height * 0.01),
                           TextFormField(
                             
-                             controller: phonecontroller,
+                             controller: emailcontroller,
                             keyboardType: TextInputType.emailAddress,
                             decoration:  InputDecoration(
                               
@@ -79,10 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 hintStyle: TextStyle(fontSize: 13),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8),borderSide: BorderSide.none)),
                                 validator: (value) {
-                                  if(value!.isEmpty){
-                                    return 'Please enter your phone email';
-                                  }
-                                },
+                            if (value!.isEmpty) {
+                              return 'Please enter your phone number';
+                            }
+                            else{
+                              return null;
+                            }
+                          },
                           ),
                           SizedBox(height: size.height * 0.03),
                           const Text(
@@ -92,6 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(height: size.height * 0.01),
                           TextFormField(
+                            obscureText: _passwordVisible,
                               controller: passwordcontroller,
                             keyboardType: TextInputType.emailAddress,
                             decoration:  InputDecoration(
@@ -101,12 +193,30 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // hintText: 'Enter Phone Number/Email ID/BN User Id',
                                 hintText: 'Password',
                                 hintStyle: TextStyle(fontSize: 13),
+                                suffixIcon: IconButton(
+            icon: Icon(
+             
+               _passwordVisible
+               ? Icons.visibility
+               : Icons.visibility_off,
+               color: Colors.grey
+               ),
+            onPressed: () {
+           
+               setState(() {
+                   _passwordVisible = !_passwordVisible;
+               });
+             },
+            ),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8),borderSide: BorderSide.none)),
-                                validator: (value) {
-                                  if(value!.isEmpty){
-                                    return 'Please enter your password';
-                                  }
-                                },
+                                 validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            else{
+                              return null;
+                            }
+                          },
                           ),
                           SizedBox(
                             height: size.height * 0.02,
@@ -169,8 +279,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           RoundButton(
                               title: 'Login',
                               loading: loading,
-                              onTap: () async{
-                                  
+                              onTap: () {
+                                     if (_formKey.currentState!.validate()) {
+                              loginBeautyProducts(
+                                emailcontroller.text.toString(),
+                                passwordcontroller.text.toString(),
+                              );
+                            }
                             
                               }),
                                   SizedBox(

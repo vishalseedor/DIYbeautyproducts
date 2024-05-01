@@ -1,8 +1,12 @@
 
-import 'package:diy_beauty_products/BottomNavigationBar/bottomnavigationbar.dart';
+import 'dart:convert';
+
+
 import 'package:diy_beauty_products/Colors/colors.dart';
+import 'package:diy_beauty_products/LoginScreen/loginscreen.dart';
 import 'package:diy_beauty_products/LoginScreen/roundbutton.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 
 class RegisterScreen extends StatefulWidget {
@@ -14,6 +18,63 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
 final _formKey = GlobalKey<FormState>();
+Future<void>registerBeautyProducts(
+
+String name,String phone,String email,String password,String address) async {
+  const url = 'http://campus.sicsglobal.co.in/Project/Diy_product/api/user_registration.php';
+
+  Map<String, String> body = {
+  'name':name,
+  'phone':phone,
+  'email':email,
+  'password':password,
+  'address':address
+  };
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      body: body,
+      
+    );
+       var jsonData=json.decode(response.body);
+
+      if (response.statusCode == 200) {
+      if(jsonData['status']==true){
+          ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+          backgroundColor: appcolor,
+          content: const Text('Register Successful!',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      Navigator.push(context,MaterialPageRoute(builder:(context)=>const LoginScreen()));
+      print(body);
+      print("Response body${response.body}");
+    
+      print('Registration successful');
+      }
+      else{
+        jsonData['status']==false;
+         // ignore: use_build_context_synchronously
+         ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+          backgroundColor:appcolor,
+          content: const Text('User Already Exists !',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+          duration: const Duration(seconds: 4),
+        ),
+      );
+         print('Error: ${response.statusCode}');
+      }
+     
+    } else {
+       
+     print('fffff');
+    }
+  } catch (error) {
+    print('Error: $error');
+  }
+}
 
 
 
@@ -23,6 +84,7 @@ final _formKey = GlobalKey<FormState>();
   TextEditingController emailcontroller=TextEditingController();
   TextEditingController passswordcontroller=TextEditingController();
   TextEditingController addresscontroller=TextEditingController();
+ 
 
   
   
@@ -80,6 +142,9 @@ final _formKey = GlobalKey<FormState>();
                                      if(value!.isEmpty){
                                        return 'Please enter your name';
                                      }
+                                     else{
+                                      return null;
+                                     }
                                    },
                              ),
                              SizedBox(height: size.height * 0.02),
@@ -102,6 +167,9 @@ final _formKey = GlobalKey<FormState>();
                                    validator: (value) {
                                      if(value!.isEmpty){
                                        return 'Please enter your phone';
+                                     }
+                                     else{
+                                      return null;
                                      }
                                    },
                              ),
@@ -128,6 +196,9 @@ final _formKey = GlobalKey<FormState>();
                                      if(value!.isEmpty){
                                        return 'Please enter your email';
                                      }
+                                     else{
+                                      return null;
+                                     }
                                    },
                              ),
                                SizedBox(height: size.height * 0.02),
@@ -152,22 +223,25 @@ final _formKey = GlobalKey<FormState>();
                                      if(value!.isEmpty){
                                        return 'Please enter your password';
                                      }
+                                     else{
+                                      return null;
+                                     }
                                    },
                              ),
-                               SizedBox(height: size.height * 0.02),
+                               SizedBox(height: size.height * 0.01),
                              const Text(
                                'Address',
                                style: TextStyle(
                                    color: Colors.black, fontWeight: FontWeight.bold),
                              ),
-                             SizedBox(height: size.height * 0.01),
+                              SizedBox(height: size.height * 0.01),
                              TextFormField(
-                                controller: addresscontroller,
+                              controller: addresscontroller,
                                keyboardType: TextInputType.text,
                                decoration:  InputDecoration(
                                   fillColor: Colors.grey[200],
                                  filled: true,
-                                   prefixIcon: const Icon(Icons.location_history_outlined,color:Colors.black),
+                                   prefixIcon: const Icon(Icons.lock_outline,color:Colors.black),
                                    // hintText: 'Enter Phone Number/Email ID/BN User Id',
                                    hintText: 'Address',
                                    hintStyle: const TextStyle(fontSize: 13),
@@ -176,8 +250,13 @@ final _formKey = GlobalKey<FormState>();
                                      if(value!.isEmpty){
                                        return 'Please enter your address';
                                      }
+                                     else{
+                                      return null;
+                                     }
                                    },
                              ),
+                             
+                             
                             
                             
                                          
@@ -189,7 +268,22 @@ final _formKey = GlobalKey<FormState>();
                                  title: 'Register',
                                  loading: loading,
                                  onTap: (){
-                                  Navigator.push(context,MaterialPageRoute(builder: (context)=>const HomePage()));
+                                if (_formKey.currentState!.validate()) {
+                                  registerBeautyProducts(
+                                    namecontroller.text.toString(),
+                                    phonecontroller.text.toString(),
+                                    emailcontroller.text.toString(),
+                                    passswordcontroller.text.toString(),
+                                    addresscontroller.text.toString(),
+
+                                   
+                     
+                
+                 );
+
+
+                
+                  }
                                  }),
                 
                            ],
